@@ -12,38 +12,52 @@ A **minimal yet powerful Git-aware Zsh prompt** system crafted with:
 ```
 ~/.config/zsh/
 ├── prompt/
-│   ├── git-status.zsh         # git_prompt_segment function
-│   └── prompt.zsh             # precmd hook building PROMPT & RPROMPT
-├── zsh-prompt                # sourced from .zshrc
-└── ...                       # other configs (env.zsh, exports, aliases, etc.)
+│   ├── prompt-git-status.zsh   # git_prompt_segment function
+│   ├── prompt-utils.zsh        # helper functions like thin_element/thick_element and setup functions
+│   └── prompt-init.zsh         # prompt-setup function and precmd hook
+├── zsh-prompt                 # sourced from .zshrc
+└── ...                        # other configs (env.zsh, exports, aliases, etc.)
 ```
 
 ## ⚙️ Setup Instructions
 
-### 1. `prompt.zsh`
+### 1. `prompt-init.zsh`
 
 ```zsh
 #!/usr/bin/env zsh
-# ~/.config/zsh/prompt/prompt.zsh
+# ~/.config/zsh/prompt/prompt-init.zsh
 
-precmd() {
-    ROOT_TAG=$([[ $(id -u) -eq 0 ]] && echo "%K{230}%F{red} %B[ROOT]%b %f%k" || echo "")
-    PROMPT_TIME="%K{15}%F{241}[%*]%f%k"
-    VENV_NAME=$([[ -n "$VIRTUAL_ENV" ]] && echo "(%F{magenta}$(basename "$VIRTUAL_ENV")%f)" || echo "")
-    FULL_PATH=$([[ $(id -u) -eq 0 ]] && echo "%K{red}%F{white} %/ %f%k" || echo "%K{cyan} %F{blue}%~%f %k")
-    GIT_BRANCH=$([[ -f "$ZDOTDIR/prompt/git-status.zsh" ]] && git_prompt_segment || echo "")
-    PROMPT_END=$([[ $(id -u) -eq 0 ]] && echo "%F{red}#%f" || echo "%F{yellow}\$%f")
-    PROMPT="${PROMPT_TIME}${VENV_NAME}${FULL_PATH}${GIT_BRANCH} ${PROMPT_END} "
-    RPROMPT="${ROOT_TAG}"
+function prompt-setup() {
+    local root_tag venv_name full_path git_branch prompt_end prompt_time
+
+    if [[ $(id -u) -eq 0 ]]; then
+        root_tag="%K{230}%F{red} %B[ROOT]%b %f%k"
+        full_path="%K{red}%F{white} %/ %f%k"
+        prompt_end="%F{red}#%f"
+    else
+        root_tag=""
+        full_path="%K{cyan} %F{blue}%~%f %k"
+        prompt_end="%F{yellow}\$%f"
+    fi
+
+    prompt_time="%K{15}%F{241}[%*]%f%k"
+    venv_name=$([[ -n "$VIRTUAL_ENV" ]] && echo "(%F{magenta}$(basename "$VIRTUAL_ENV")%f)" || echo "")
+    git_branch=$([[ -f "$ZDOTDIR/prompt/prompt-git-status.zsh" ]] && git_prompt_segment || echo "")
+
+    PROMPT="${prompt_time}${venv_name}${full_path}${git_branch} ${prompt_end} "
+    RPROMPT="${root_tag}"
 }
+
+autoload -Uz add-zsh-hook
+add-zsh-hook precmd prompt-setup
 ```
 
-### 2. `git-status.zsh`
+### 2. `prompt-git-status.zsh`
 
 ```zsh
-# ~/.config/zsh/prompt/git-status.zsh
+# ~/.config/zsh/prompt/prompt-git-status.zsh
 function git_prompt_segment() {
-  local BRANCH_NAME GIT_STATUS ARROWS
+  local BRANCH_NAME GIT_STATUS ARROWS BEHIND AHEAD
 
   if git rev-parse --is-inside-work-tree &>/dev/null; then
     BRANCH_NAME=$(git symbolic-ref --short -q HEAD 2>/dev/null || echo "HEAD")
@@ -73,14 +87,58 @@ function git_prompt_segment() {
 }
 ```
 
-### 3. `zsh-prompt`
+### 3. `prompt-utils.zsh`
+
+`prompt-utils.zsh` provides helper functions for building prompt segments, as well as setup functions for colours and icons used throughout the prompt. It is sourced *before* `prompt-init.zsh` to ensure all helpers and variables are available for prompt construction.
+
+#### Example helper functions:
+
+```zsh
+# ~/.config/zsh/prompt/prompt-utils.zsh
+
+# Thin segment element (for minimal separators)
+function thin_element() {
+  echo "%F{$1}$2%f"
+}
+
+# Thick segment element (for blocky segments)
+function thick_element() {
+  echo "%K{$1}%F{$2} $3 %f%k"
+}
+
+# Setup colour variables for use in prompt
+function set_prompt_colours() {
+  PROMPT_FG_MAIN=cyan
+  PROMPT_BG_MAIN=black
+  PROMPT_FG_ROOT=red
+  PROMPT_BG_ROOT=230
+  PROMPT_FG_TIME=241
+  PROMPT_BG_TIME=15
+}
+
+# Setup icons and segment elements
+function set_icons_elements() {
+  ICON_CLEAN="✓"
+  ICON_DIRTY="✗"
+  ICON_AHEAD="↑"
+  ICON_BEHIND="↓"
+  ICON_NO_UPSTREAM="⎋"
+  ICON_MERGE="🔀"
+  ICON_REBASE="⟳"
+}
+```
+
+These helpers are used in other prompt scripts to keep the code DRY and customizable.
+
+### 4. `zsh-prompt`
 
 ```zsh
 # ~/.config/zsh/zsh-prompt
 # Source this to wire up the dynamic prompt
 
-source "$ZDOTDIR/prompt/git-status.zsh"
-source "$ZDOTDIR/prompt/prompt.zsh"
+source "$ZDOTDIR/prompt/prompt-git-status.zsh"
+source "$ZDOTDIR/prompt/prompt-utils.zsh"
+source "$ZDOTDIR/prompt/prompt-init.zsh"
 ```
 
 ---
