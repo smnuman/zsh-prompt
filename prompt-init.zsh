@@ -1,5 +1,6 @@
 #!/usr/bin/env zsh
 # 🌀 Set prompt dynamically at each shell
+# Following variable is used in prompt-utils.zsh
 __last_uid=""
 function prompt-setup {
     PROMPT_TIME="${_VS_}${ROOT_COLOR}%*${COLOR_RESET}"
