@@ -1,3 +1,4 @@
+#!/usr/bin/env zsh
 # ~/.config/zsh/prompt/git-status.zsh
 function git_prompt_segment() {
   local BRANCH_NAME GIT_STATUS ARROWS

@@ -1,11 +1,22 @@
 # 🌀 Zsh Minimal Git-Aware Prompt
 
-A **minimal yet powerful Git-aware Zsh prompt** system crafted with:
+A **minimal yet powerful Git-aware Zsh prompt** system designed for developers who value clarity and performance.
 
-* Clear visual cues
-* Upstream sync indicators
-* Virtual environment detection
-* Root vs User differentiation
+## ✨ Features
+
+* 🎯 **Clear visual cues** - Instant status at a glance
+* 🔄 **Upstream sync indicators** - Know when to push/pull
+* 🐍 **Virtual environment detection** - Python/Node env display
+* 👤 **Root vs User differentiation** - Safety warnings for root sessions
+* ⚡ **Fast** - Pure Zsh, no external dependencies
+* 🎨 **Customizable** - Modular design for easy tweaking
+
+## 📸 Preview
+
+```
+[12:34:56](venv) ~/project [ main ✓ ↑2 ] $
+└─ time   └─venv └─path  └─branch└status└sync
+```
 
 ## 🧱 Directory Structure
 
@@ -192,17 +203,141 @@ zsh_add_file "zsh-prompt"
 
 ---
 
+## 🚀 Installation
+
+### As Part of Parent Zsh Config (Recommended)
+
+This prompt is designed as a **Git submodule** in the parent zsh config:
+
+```bash
+# Already included if using parent ~/.config/zsh repo
+cd ~/.config/zsh
+source prompt/prompt-init.zsh  # Auto-loaded via .zshrc
+```
+
+### Standalone Installation
+
+```bash
+# Clone to your zsh config directory
+git clone https://github.com/smnuman/zsh-prompt ~/.config/zsh/prompt
+
+# Add to ~/.zshrc
+source ~/.config/zsh/prompt/prompt-git-status.zsh
+source ~/.config/zsh/prompt/prompt-utils.zsh
+source ~/.config/zsh/prompt/prompt-init.zsh
+```
+
+## 🎨 Customization
+
+### Change Colors
+
+Edit `prompt-utils.zsh`:
+
+```zsh
+# Customize in set_prompt_colours()
+PROMPT_FG_MAIN=cyan        # Main prompt color
+PROMPT_BG_MAIN=black       # Background color
+PROMPT_FG_ROOT=red         # Root user color
+PROMPT_FG_TIME=241         # Timestamp color
+```
+
+### Change Icons
+
+Edit `prompt-utils.zsh`:
+
+```zsh
+# Customize in set_icons_elements()
+ICON_CLEAN="✓"             # Clean repo
+ICON_DIRTY="✗"             # Uncommitted changes
+ICON_AHEAD="↑"             # Commits ahead
+ICON_BEHIND="↓"            # Commits behind
+ICON_NO_UPSTREAM="⎋"       # No tracking branch
+```
+
+### Add Custom Segments
+
+Add to `prompt-init.zsh`:
+
+```zsh
+# Example: Add hostname for SSH sessions
+local hostname_segment=""
+[[ -n "$SSH_CONNECTION" ]] && hostname_segment="%F{magenta}[%m]%f "
+
+PROMPT="${hostname_segment}${prompt_time}${full_path}..."
+```
+
+## 🔧 Requirements
+
+- **Zsh** ≥ 5.8
+- **Git** ≥ 2.0 (for Git status features)
+- **256-color terminal** (most modern terminals)
+
+Optional:
+- Nerd Fonts for enhanced icons
+- True color terminal for better gradients
+
+## 📦 Components
+
+| File | Purpose |
+|------|---------|
+| `prompt-init.zsh` | Main setup, `precmd` hook, prompt construction |
+| `prompt-git-status.zsh` | Git branch, status, sync indicators |
+| `prompt-utils.zsh` | Helper functions, color/icon setup |
+
+## 🌍 Platform Support
+
+- ✅ **macOS** - Full support (tested on Ventura+)
+- ✅ **Linux** - Full support (Ubuntu, Arch, Fedora)
+- ✅ **BSD** - Basic support
+- ⚠️ **Windows** - Use WSL2
+
+## 🛠️ Troubleshooting
+
+### Prompt not updating Git status?
+```bash
+# Check git is in PATH
+which git
+
+# Manually trigger prompt update
+prompt-setup
+```
+
+### Colors not displaying correctly?
+```bash
+# Test terminal color support
+echo -e "\033[38;5;82mGreen\033[0m"
+
+# Check TERM variable
+echo $TERM  # Should be xterm-256color or similar
+```
+
+### Performance issues?
+```bash
+# For very large repos, consider async Git checks
+# (future enhancement planned)
+```
+
 ## 💡 Credits
 
-Prompt ideas and implementation by Numan Syed with enhancements by ChatGPT based on real usage scenarios.
-
----
+Design and implementation by **[@smnuman](https://github.com/smnuman)** with inspiration from Spaceship, Pure, and Starship prompts.
 
 ## 📂 Future Ideas
 
-* Optional async Git check
-* Show stash count or last commit
-* Docker context / Kube context segments
-* Prompt theme switcher (light/dark)
+- [ ] Optional async Git status checks for large repos
+- [ ] Show stash count indicator
+- [ ] Docker context / Kubernetes context segments
+- [ ] Prompt theme switcher (light/dark modes)
+- [ ] Right prompt (RPROMPT) customization
+- [ ] Exit code indicator
+- [ ] Command execution time
+
+## 📝 License
+
+Part of personal dotfiles configuration. Use freely, modify as needed.
+
+---
+
+**Last Updated:** 2025-10-05
+**Part of:** [smnuman/config-zsh](https://github.com/smnuman/config-zsh)
 
 Enjoy your micro setup. Make your shell YOUR space! ☕
