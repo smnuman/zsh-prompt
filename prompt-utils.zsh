@@ -1,6 +1,15 @@
 #!/usr/bin/env zsh
 # 🌀 Set prompt dynamically at each shell
 
+# Return the current history mode icon for the prompt
+function history_mode_icon() {
+    if setopt | grep -q sharehistory; then
+        echo "🌎"   # Shared mode
+    else
+        echo "🔏"   # Private mode
+    fi
+}
+
 # Function to make a thick separator
 function thick_element {
     local element="$1"

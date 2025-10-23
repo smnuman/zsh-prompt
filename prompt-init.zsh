@@ -8,10 +8,13 @@ function prompt-setup {
 
     FULL_PATH="${LEFT_SEPARATOR}${ROOT_PATH_COLOR}${ROOT_PATH_ELEMENT}${COLOR_RESET}${RIGHT_SEPARATOR}"
 
+    # Get history mode icon for shared or private mode.
+    HISTORY_ICON=$(type history_mode_icon >/dev/null 2>&1 && echo " $(history_mode_icon)" || echo "")
+
     # 🌱 Git segment using 'prompt-git-status.zsh' in ~/.config/zsh/prompt/
     GIT_BRANCH=$([[ -d .git && -f "$ZDOTDIR/prompt/prompt-git-status.zsh" ]] &&  git_prompt_segment || echo "")
 
-    PROMPT_END="%K{15}${ROOT_PROMPT_COLOR}%(!.#.$)${PROMPT_COLOR_RESET} %k${RIGHT_POINTING}"
+    PROMPT_END="%K{15}${HISTORY_ICON}${ROOT_PROMPT_COLOR}%(!.#.$)${PROMPT_COLOR_RESET} %k${RIGHT_POINTING}"
     PROMPT="${myOS}${PROMPT_TIME}${VENV_NAME}${FULL_PATH}${GIT_BRANCH}${PROMPT_END} "
 
     RPROMPT="${ROOT_TAG}"
