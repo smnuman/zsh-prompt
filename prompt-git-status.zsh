@@ -75,6 +75,8 @@ function git_remote_segment() {
 
 function set-remote() {
     local A="$1" B="$2"
+    # If A or B is empty → return nothing
+    [[ -z "$A" || -z "$B" ]] && { print -r -- ""; return; }
     # PRE_REMOTE=${PRE_REMOTE:-0}
     : ${PRE_REMOTE:=1}
     # (( PRE_REMOTE )) && echo "${A}${B}" || echo "${B}${A}"

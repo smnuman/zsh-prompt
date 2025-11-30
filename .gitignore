@@ -57,3 +57,5 @@ secrets/
 credentials/
 
 # === === === === Custom ignores below: === === === ===
+.git*
+.gsubignore

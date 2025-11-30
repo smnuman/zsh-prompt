@@ -1,0 +1,15 @@
+# git-crypt encryption patterns
+**/*.env filter=git-crypt diff=git-crypt
+**/*.key filter=git-crypt diff=git-crypt
+**/*.pem filter=git-crypt diff=git-crypt
+**/*.p12 filter=git-crypt diff=git-crypt
+**/*.pfx filter=git-crypt diff=git-crypt
+**/*secret* filter=git-crypt diff=git-crypt
+**/*credential* filter=git-crypt diff=git-crypt
+**/*password* filter=git-crypt diff=git-crypt
+**/*.token filter=git-crypt diff=git-crypt
+**/.ssh/id_* filter=git-crypt diff=git-crypt
+**/.ssh/*_rsa filter=git-crypt diff=git-crypt
+**/.gnupg/*.key filter=git-crypt diff=git-crypt
+**/secrets/ filter=git-crypt diff=git-crypt
+**/credentials/ filter=git-crypt diff=git-crypt
