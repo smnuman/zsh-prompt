@@ -3,10 +3,11 @@
 
 # Return the current history mode icon for the prompt
 function history_mode_icon() {
+    local spc=" "
     if setopt | grep -q sharehistory; then
-        echo "🌎"   # Shared mode
+        echo "${spc}🌎"   # Shared mode
     else
-        echo "🔏"   # Private mode
+        echo "${spc}🔏"   # Private mode
     fi
 }
 
@@ -21,13 +22,13 @@ function thick_element {
 function thin_element {
     local element="$1"
     local bg="$2" fg="$3"       # element in colors
-    local spc="${4:-""}"        # optional space before & after element
+    local pre_spc="${4:-""}"        # optional space before element
+    local post_spc="${5:-""}"        # optional space after element
 
     if [[ -n "$bg" ]]; then
-        # echo "%K{${bg}}${spc}%F{${fg}}${element}%f${spc}%k"
-        echo "%K{${bg}}${spc}%F{${fg}}${element}%f${spc}"
+        echo "%K{${bg}}${pre_spc}%F{${fg}}${element}%f${post_spc}"     # the %k termiantion is in the next element, by design
     else
-        echo "${spc}%F{${fg}}${element}%f${spc}"
+        echo "${element}"
     fi
 }
 
@@ -50,39 +51,51 @@ function set_icons {
         msys*|cygwin*|win32) OS_ICON=$'\uF17A' ;;  # Windows (Git Bash or WSL)
         *)          OS_ICON="❓" ;;
     esac
+    HIST_ICON=$(type history_mode_icon >/dev/null 2>&1 && history_mode_icon || echo "")
     ICON_BRANCH=$'\uE0A0'
     ICON_CLEAN="✓"
     ICON_DIRTY="✗"
     ICON_AHEAD="↑"
     ICON_BEHIND="↓"
-    ICON_UPSTREAM="⎋"       # green
-    ICON_NO_UPSTREAM="⎋"    # red
+    ICON_UPSTREAM="⎋"       # in green
+    ICON_NO_UPSTREAM="⎋"    # in red
     ICON_MERGE="🔀"
     ICON_REBASE="⟳"
+    PRE_SPACE=" "
+    POST_SPACE=" "
+    NO_SPACE=""
 }
 
 # Helper function to set icons
 function set_elements {
-    _VS_GIT_=$(thin_element $'\uE0B1' "15" "black" " ") # "%K{15}%F{black}"$'\uE0B1'"%f%k"  # › (thin angle bracket separator)
+    _VS_GIT_=$(thin_element $'\uE0B1' "15" "black" ${PRE_SPACE}) # "%K{15}%F{black}"$'\uE0B1'"%f%k"  # › (thin angle bracket separator)
     RIGHT_POINTING=$(thin_element $'\uE0B0' "" "15") # "%F{15}"$'\uE0B0'"%f"  # Right-pointing arrow filled
 
     if [[ $(id -u) -eq 0 ]]; then
-        # root elements
-        ROOT_TAG=%B$(thin_element "[ROOT]" "230" "red" " ")%b
+        # root user elements
+        OS_ELEMENT=$(thin_element "${OS_ICON}" "cyan" "red" ${PRE_SPACE} ${POST_SPACE})
+        ROOT_TAG=%B$(thin_element "[ROOT]" "230" "red" ${PRE_SPACE})%b
         ROOT_PATH_ELEMENT="%/"
         _VS_=$(thin_element $'\uE0B1' "cyan" "black")       # › (thin angle bracket separator)
-        myOS=$(thin_element "${OS_ICON}" "cyan" "red" " ")
-        LEFT_SEPARATOR=$(thick_element $'\uE0B0' "black" "cyan" "red" "black")
-        RIGHT_SEPARATOR=$(thick_element $'\uE0B0' "black" "red" "15" "black")
+        PRE_PATH=$(thick_element $'\uE0B0' "black" "cyan" "red" "black")
+        POST_PATH=$(thick_element $'\uE0B0' "black" "red" "15" "black")
     else
         # regular user elements
+        OS_ELEMENT=$(thin_element "${OS_ICON}" "15" "blue" ${PRE_SPACE} ${POST_SPACE})
         ROOT_TAG=""
         ROOT_PATH_ELEMENT="%~"
         _VS_=$(thin_element $'\uE0B1' "15" "black")       # › (thin angle bracket separator)
-        myOS=$(thin_element "${OS_ICON}" "15" "blue" " ")
-        LEFT_SEPARATOR=$(thick_element $'\uE0B0' "black" "15" "cyan" "black")
-        RIGHT_SEPARATOR=$(thick_element $'\uE0B0' "black" "cyan" "15" "black")
+        PRE_PATH=$(thick_element $'\uE0B0' "black" "15" "cyan" "black")
+        POST_PATH=$(thick_element $'\uE0B0' "black" "cyan" "15" "black")
     fi
+
+    (( PROMPT_SHOW_OS_ICON )) || OS_ELEMENT=""
+
+    PROMPT_TIME="${PROMPT_TIME_FORMAT:=%*}"
+    # PROMPT_USER="%n${USER_WITH_MACHINE:+@%m}"    # double quotes → expansions happen now
+    PROMPT_USER="%n${${USER_WITH_MACHINE:#0}:+@%m}"
+    V_ENVIRON="(%F{magenta}${${VIRTUAL_ENV:t}}%f)"
+    # GIT_DETAILS=$([[ -d .git && -f "$ZDOTDIR/prompt/prompt-git-status.zsh" ]] && git_prompt_segment || echo "") # not yet available here
 }
 
 # Helper function to set prompt colours
