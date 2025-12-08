@@ -80,7 +80,8 @@ function set-remote() {
     (( $3 )) && A="$2" B="$1" || A="$1" B="$2"      # swapping arguments based on PRE_REMOTE(here $3), if it is passed
 
     # If A and B both are empty → return nothing
-    [[ -z "$A" && -z "$B" ]] && { print -r -- ""; return; }
+    # [[ -z "$A" && -z "$B" ]] && { print -r -- ""; return; }
+    [[ -z "$A" || -z "$B" ]] && { print -r -- ""; return; }
     [[ -z "$A" ]] && { print -r -- ""; return; }
     [[ -z "$B" ]] && { print -r -- "${A}"; return; }
 
