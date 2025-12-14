@@ -85,7 +85,7 @@ PROMPT_SHOW_VENV=1          # Show virtualenv name: 1=yes, 0=no
 #                          GIT Segment
 #                          -----------
 PROMPT_SHOW_GIT=1           # Show git info in prompt: 1=yes, 0=no
-SHOW_REMOTE=0               # Show remote segment at all (1 = show, 0 = hide)
+SHOW_REMOTE=1               # Show remote segment at all (1 = show, 0 = hide)
 PRE_REMOTE=1                # Show remote before (1) or after (0) branch/state
 #                       Remote service icons
 ICON_GITHUB="\uF09B"
