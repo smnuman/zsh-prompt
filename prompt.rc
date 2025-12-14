@@ -31,20 +31,6 @@ PROMPT_CLEAN=1
 # Available modes: light | dark | auto
 PROMPT_COLOR_MODE="auto"
 
-# When running in a light terminal background
-COLOR_SCHEME_LIGHT=(
-  ROOT_COLOR="%K{15} %F{241}"
-  ROOT_PATH_COLOR="%K{195} %F{26}"
-  ROOT_PROMPT_COLOR=" %F{26}"
-)
-
-# When running in a dark terminal background
-COLOR_SCHEME_DARK=(
-  ROOT_COLOR="%K{15} %F{241}"
-  ROOT_PATH_COLOR="%K{39} %F{75}"
-  ROOT_PROMPT_COLOR=" %F{229}"
-)
-
 # Override autodetected scheme (optional)
 FORCE_SCHEME=""    # set to "light" or "dark" to force
 

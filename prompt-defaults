@@ -3,74 +3,126 @@
 #  User-tweakable settings for prompt behaviour, colours, icons, logic
 # =====================================================================
 
+# Clean or decorated style:
+# 1 → plain mode (no background colours)
+# 0 → with background (default)
+PROMPT_PLAIN=0
+
+# =====================================================================
+#               PROMPT with Background - CONFIGURATION
+# =====================================================================
+
+# ---------------------- Layout & Behaviour ---------------------------
 # Order of prompt segments (left to right)
 # Valid values: time user venv path git none
 # Examples:
 # PROMPT_LAYOUT=(time user venv path git)
-# PROMPT_LAYOUT=(time git)
-# PROMPT_LAYOUT=(time user path git)
-PROMPT_LAYOUT=(time path git)
+# PROMPT_LAYOUT=(time user git path)
+PROMPT_LAYOUT=(time user path git)
+# PROMPT_LAYOUT=(user time path git)
+# PROMPT_LAYOUT=(path time user git)
+# PROMPT_LAYOUT=(time path user git)
+# PROMPT_LAYOUT=(time path git)
+# PROMPT_LAYOUT=(time git path)
+# PROMPT_LAYOUT=(user path git)
+# PROMPT_LAYOUT=(path git)
+# PROMPT_LAYOUT=(git path)
+# PROMPT_LAYOUT=(user path)
+# PROMPT_LAYOUT=(user)
 # PROMPT_LAYOUT=(path)
 # PROMPT_LAYOUT=(git)
 # PROMPT_LAYOUT=(none)
+# ---------------------- Segment Highlighting --------------------------
+# Choose which segment to highlight:
+#   (path | git | time | user | venv | none)
+# - default is "path" if not set
+# - "none" disables highlighting entirely
+# - only one segment can be highlighted at a time
+# - the user "root" segment is highlighted automatically if user is
+#   root and opted for in LAYOUT list above
+PROMPT_HIGHLIGHT=
+# default higlight color is "cyan"
+PROMPT_HIGHLIGHT_COLOR="cyan"
 
-# --- General Behaviour ------------------------------------------------
-# Show OS icon in prompt? (1 = show, 0 = hide)
-PROMPT_SHOW_OS_ICON=1
-# Show username@hostname in prompt?
-USER_WITH_MACHINE=0
-# Show history mode icon in prompt? (1 = show, 0 = hide)
-PROMPT_SHOW_HISTORY_MODE=0
+# ----------------------- Segment Toggles ------------------------------
 
-# Enable time in prompt (1 = show, 0 = hide)
-PROMPT_SHOW_TIME=1
+#                     Operating System's Icon
+#                     -----------------------
+# SHOWS the Operating system Identifier Icon (to modify the ICON itself see
+# Icons configuration part below)
+PROMPT_SHOW_OS_ICON=1       # Show OS icon in prompt? (1 = show, 0 = hide)
+
+#                           User Segment
+#                           ------------
+# SHOWS THE LOCALS USER in the PROMPT
+PROMPT_SHOW_USER=1          # Show user in prompt? (1 = show, 0 = hide)
+USER_WITH_MACHINE=0         # Show machine name with user? (1 = show, 0 = hide)
+
+#                          HISTORY segement
+#                          ---------------
+# HISTORY MODE SHOWS IF THE HISTORY IS PRIVATE or SHARED
+PROMPT_SHOW_HISTORY_MODE=1  # Show history mode icon in prompt? (1 = show, 0 = hide)
+
+#                          Time Segment
+#                          ------------
+# Shows time with possible various formats. Choose format below.
+PROMPT_SHOW_TIME=1          # Enable time in prompt (1 = show, 0 = hide)
 # Time format (default: 24-hour HH:MM:SS)
 # •	PROMPT_TIME_FORMAT="%D{%H:%M}"
 # •	PROMPT_TIME_FORMAT="%D{%I:%M %p}" → 12-hour with AM/PM
 # •	PROMPT_TIME_FORMAT="%D{%a %d %b %H:%M}" → Day + date
-# Uncomment the following line to set custom time format:
-# PROMPT_TIME_FORMAT="%D{%a %d %b %H:%M}"                     # "%*"
+# Uncomment one of the following lines to set custom time format:
+# PROMPT_TIME_FORMAT="%D{%a %d %b %H:%M}"   # equivalent to "%*"
+PROMPT_TIME_FORMAT="%D{%H:%M}"
+# PROMPT_TIME_FORMAT="%D{%I:%M %p}"         # → 12-hour with AM/PM
+# PROMPT_TIME_FORMAT="%D{%a %d %b %H:%M}"   # → Day + date
 
-PROMPT_SHOW_USER=1
-# Show virtualenv name: 1=yes, 0=no
-PROMPT_SHOW_VENV=1
+#                         Virtualenv Segment
+#                         ------------------
+# Shows the name of the current Python virtual environment
+PROMPT_SHOW_VENV=1          # Show virtualenv name: 1=yes, 0=no
 
-# Show git info in prompt: 1=yes, 0=no
-PROMPT_SHOW_GIT=1
+#                          GIT Segment
+#                          -----------
+PROMPT_SHOW_GIT=1           # Show git info in prompt: 1=yes, 0=no
+SHOW_REMOTE=0               # Show remote segment at all (1 = show, 0 = hide)
+PRE_REMOTE=1                # Show remote before (1) or after (0) branch/state
+#                       Remote service icons
+ICON_GITHUB="\uF09B"
+ICON_GITLAB="\uF296"
 
-# Show current path in prompt: 1=yes, 0=no
-PROMPT_SHOW_PATH=1
+#                        Path Segment
+#                        ------------
+PROMPT_SHOW_PATH=1          # Show current path in prompt: 1=yes, 0=no
 
 
-# Clean or decorated style:
-# 1 → plain mode (no background colours)
-# 0 → with background (default)
-PROMPT_PLAIN=1
+# ====================================================================
+#               PROMPT auto background -- Configuration
+# ====================================================================
 
-# --- Colour Scheme Selection -----------------------------------------
-
+# --------------------- Colour Scheme Selection ----------------------
 # Available modes: light | dark | auto
 PROMPT_COLOR_MODE="auto"
 
-# When running in a light terminal background
-COLOR_SCHEME_LIGHT=(
-  ROOT_COLOR="%K{15} %F{241}"
-  ROOT_PATH_COLOR="%K{195} %F{26}"
-  ROOT_PROMPT_COLOR=" %F{26}"
-)
+# # When running in a light terminal background
+# COLOR_SCHEME_LIGHT=(
+#   ROOT_COLOR="%K{15} %F{241}"
+#   ROOT_PATH_COLOR="%K{195} %F{26}"
+#   ROOT_PROMPT_COLOR=" %F{26}"
+# )
 
-# When running in a dark terminal background
-COLOR_SCHEME_DARK=(
-  ROOT_COLOR="%K{15} %F{241}"
-  ROOT_PATH_COLOR="%K{39} %F{75}"
-  ROOT_PROMPT_COLOR=" %F{229}"
-)
+# # When running in a dark terminal background
+# COLOR_SCHEME_DARK=(
+#   ROOT_COLOR="%K{15} %F{241}"
+#   ROOT_PATH_COLOR="%K{39} %F{75}"
+#   ROOT_PROMPT_COLOR=" %F{229}"
+# )
 
 # Override autodetected scheme (optional)
 FORCE_SCHEME=""    # set to "light" or "dark" to force
 
 
-# --- Icons ------------------------------------------------------------
+# ----------------------- Icons -----------------------------
 
 # Override OS icon for fun
 CUSTOM_OS_ICON=""      # e.g., "" or "🐧"
@@ -81,14 +133,6 @@ CUSTOM_BRANCH_ICON=""
 # Dirty / Clean icons
 ICON_DIRTY="✗"
 ICON_CLEAN="✓"
-
-# Show remote segment at all (1 = show, 0 = hide)
-SHOW_REMOTE=1
-# Show remote before (1) or after (0) branch/state
-PRE_REMOTE=1
-# Remote service icons
-ICON_GITHUB="\uF09B"
-ICON_GITLAB="\uF296"
 
 # --- Prompt Layout ----------------------------------------------------
 
