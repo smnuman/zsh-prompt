@@ -13,3 +13,4 @@
 **/.gnupg/*.key filter=git-crypt diff=git-crypt
 **/secrets/ filter=git-crypt diff=git-crypt
 **/credentials/ filter=git-crypt diff=git-crypt
+docs/**/*.md filter=git-crypt diff=git-crypt
