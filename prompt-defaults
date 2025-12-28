@@ -14,24 +14,36 @@ PROMPT_PLAIN=0
 
 # ---------------------- Layout & Behaviour ---------------------------
 # Order of prompt segments (left to right)
-# Valid values: time user venv path git none
-# Examples:
-# PROMPT_LAYOUT=(time user venv path git)
+# Valid values: time user node venv path git none
+# Examples: === === (just uncomment one to use, comment to skip) === ===
+# PROMPT_LAYOUT=(time user node venv path git)
+# PROMPT_LAYOUT=(time user node path venv git)
+# PROMPT_LAYOUT=(time user venv node git path)
+# PROMPT_LAYOUT=(time path venv node git user)
+# PROMPT_LAYOUT=(time path node venv user git)
+PROMPT_LAYOUT=(time node venv path git)
+# PROMPT_LAYOUT=(time node venv git path)
 # PROMPT_LAYOUT=(time user git path)
-PROMPT_LAYOUT=(time user path git)
+# PROMPT_LAYOUT=(time user path git)
 # PROMPT_LAYOUT=(user time path git)
 # PROMPT_LAYOUT=(path time user git)
 # PROMPT_LAYOUT=(time path user git)
 # PROMPT_LAYOUT=(time path git)
 # PROMPT_LAYOUT=(time git path)
 # PROMPT_LAYOUT=(user path git)
+# PROMPT_LAYOUT=(time git none)
+# PROMPT_LAYOUT=(time path)
 # PROMPT_LAYOUT=(path git)
 # PROMPT_LAYOUT=(git path)
 # PROMPT_LAYOUT=(user path)
+# PROMPT_LAYOUT=(venv path)
+# PROMPT_LAYOUT=(node path)
+# PROMPT_LAYOUT=(time)
 # PROMPT_LAYOUT=(user)
 # PROMPT_LAYOUT=(path)
 # PROMPT_LAYOUT=(git)
 # PROMPT_LAYOUT=(none)
+
 # ---------------------- Segment Highlighting --------------------------
 # Choose which segment to highlight:
 #   (path | git | time | user | venv | none)
@@ -40,11 +52,12 @@ PROMPT_LAYOUT=(time user path git)
 # - only one segment can be highlighted at a time
 # - the user "root" segment is highlighted automatically if user is
 #   root and opted for in LAYOUT list above
-PROMPT_HIGHLIGHT=
+PROMPT_HIGHLIGHT=none
+PROMPT_HL_ROOT_USER=1       # Highlighting user segment, when user is root (1=yes, 0=no)
 # default higlight color is "cyan"
 PROMPT_HIGHLIGHT_COLOR="cyan"
 
-# ----------------------- Segment Toggles ------------------------------
+# ------------------ Segment Toggles (admin use) -------------------------
 
 #                     Operating System's Icon
 #                     -----------------------
@@ -56,7 +69,7 @@ PROMPT_SHOW_OS_ICON=1       # Show OS icon in prompt? (1 = show, 0 = hide)
 #                           ------------
 # SHOWS THE LOCALS USER in the PROMPT
 PROMPT_SHOW_USER=1          # Show user in prompt? (1 = show, 0 = hide)
-USER_WITH_MACHINE=0         # Show machine name with user? (1 = show, 0 = hide)
+USER_WITH_MACHINE=0         # Show machine name with user(like: user@host)? (1 = show, 0 = hide)
 
 #                          HISTORY segement
 #                          ---------------
@@ -77,6 +90,11 @@ PROMPT_TIME_FORMAT="%D{%H:%M}"
 # PROMPT_TIME_FORMAT="%D{%I:%M %p}"         # → 12-hour with AM/PM
 # PROMPT_TIME_FORMAT="%D{%a %d %b %H:%M}"   # → Day + date
 
+#                       Node.js Segment
+#                       ---------------
+# Shows the current Node.js version if in use
+PROMPT_SHOW_NODE=1          # Show Node.js version: 1=yes, 0
+
 #                         Virtualenv Segment
 #                         ------------------
 # Shows the name of the current Python virtual environment
@@ -85,7 +103,7 @@ PROMPT_SHOW_VENV=1          # Show virtualenv name: 1=yes, 0=no
 #                          GIT Segment
 #                          -----------
 PROMPT_SHOW_GIT=1           # Show git info in prompt: 1=yes, 0=no
-SHOW_REMOTE=1               # Show remote segment at all (1 = show, 0 = hide)
+SHOW_REMOTE=0               # Show remote segment at all (1 = show, 0 = hide)
 PRE_REMOTE=1                # Show remote before (1) or after (0) branch/state
 #                       Remote service icons
 ICON_GITHUB="\uF09B"
@@ -140,7 +158,8 @@ ICON_CLEAN="✓"
 PROMPT_PATH_MODE="smart"
 
 # Enable an additional right-prompt tag?
-PROMPT_SHOW_RIGHT_TAGS=1
+PROMPT_RIGHT_SEGMENTS=1
+RPOMPT_LAYOUT=(none)
 
 # =====================================================================
 #                     END OF PROMPTRC

@@ -27,6 +27,7 @@ Thumbs.db
 # Logs and databases
 *.log
 logs/
+log/
 *.sql
 *.sqlite
 
@@ -57,3 +58,6 @@ secrets/
 credentials/
 
 # === === === === Custom ignores below: === === === ===
+*_old*.*
+*_old_*.*
+*old_*.*

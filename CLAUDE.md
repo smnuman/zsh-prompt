@@ -13,10 +13,12 @@ The prompt system consists of three core components that work together:
 ### Core Files Structure
 ```
 prompt/
+├── prompt.rc             # User editable rc file in a symlinked version at ~/.config/.promptrc
+├── prompt-defaults       # Main prompt configuration, initially copied to prompt.rc at distribution
 ├── prompt-init.zsh       # Main prompt assembly and precmd hook
 ├── prompt-utils.zsh      # Styling functions, OS detection, color schemes
 ├── prompt-git-status.zsh # Git repository status integration
-└── CLAUDE.md            # This file
+└── CLAUDE.md             # This file
 ```
 
 ### Component Responsibilities
@@ -24,7 +26,7 @@ prompt/
 **`prompt-utils.zsh`** - Foundation layer:
 - OS detection with Nerd Font icons (macOS 󱄅, Ubuntu 󰕈, Linux 󰌽, Windows 󰍲)
 - Root vs regular user differentiation
-- Color scheme management (cyan/blue for users, red/cyan for root)
+- Color scheme management (default: cyan/blue for users, red/cyan for root)
 - History mode detection (🌎 shared, 🔏 private)
 - Powerline-style separator elements using Unicode chars
 

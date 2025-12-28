@@ -58,7 +58,7 @@ ICON_GITLAB="GL"
 PROMPT_PATH_MODE="smart"
 
 # Enable an additional right-prompt tag?
-PROMPT_SHOW_RIGHT_TAGS=1
+PROMPT_RIGHT_SEGMENTS=1
 
 # =====================================================================
 #                     END OF PROMPTRC

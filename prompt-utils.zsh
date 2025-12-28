@@ -69,39 +69,64 @@ function set_icons {
     NO_SPACE=""
 }
 
-# Helper function to set icons
+# Helper function to reset dynamic elements used in prompt-init.zsh
+function set_dynamic_elements {
+    V_ENVIRON="${${VIRTUAL_ENV:t}:-}"
+    NODE_INFO="$(command -v node >/dev/null 2>&1 && node --version 2>/dev/null)"
+}
+
+# Helper function to set various elements used in the prompt-segments
 function set_elements {
 
-    _VS_GIT_=$(thin_element                  $'\uE0B1'      "${_VS_GIT_COLOR}"    "${PROMPT_EL_FG}" "${PRE_SPACE}"   ) # › (thin angle bracket separator for git segment internals)
-    _VS2=$(thin_element                      $'\uE0B1'      "${PROMPT_normal_BG}" "${PROMPT_EL_FG}"                  ) # › (thin angle bracket separator 2)
-    RIGHT_POINTING=$(thin_element            $'\uE0B0'      ""                    "${PROMPT_normal_BG}"              ) # Right-pointing arrow filled
+    _VS_GIT_=$(thin_element                  $'\uE0B1'      "${_VS_GIT_BG}"         "${PROMPT_EL_FG}"           "${PRE_SPACE}"              "${POST_SPACE}"     ) # › (thin angle bracket separator for git segment internals)
+    RIGHT_POINTING=$(thin_element            $'\uE0B0'      ""                      "${PROMPT_normal_BG}"                               ) # Right-pointing arrow filled
+    _VS1N=$(thin_element                     $'\uE0B1'      "${PROMPT_normal_BG}"   "${PROMPT_EL_FG}"           ""                          "${POST_SPACE}"     ) # › (thin angle bracket separator 1: without pre-space)
+    _VS2N=$(thin_element                     $'\uE0B1'      "${PROMPT_normal_BG}"   "${PROMPT_EL_FG}"                                   )                               # › (thin angle bracket separator 2: without any space pre- or -post)
 
     if [[ $(id -u) -eq 0 ]]; then
         # root user elements
-        OS_ELEMENT=$(thin_element            "${OS_ICON}"   "${PROMPT_OS_ROOT_BG}" "${PROMPT_OS_ROOT_FG}" "${PRE_SPACE}"          "${POST_SPACE}"   )
-        ROOT_TAG=%B$(thin_element            "[ROOT]"       "230"                 "${PROMPT_OS_ROOT_FG}"  "${PRE_SPACE}")%b
+        (( PROMPT_SHOW_OS_ICON )) && \
+        OS_ELEMENT=$(thin_element            "${OS_ICON}"   "${PROMPT_OS_ROOT_BG}"  "${PROMPT_OS_ROOT_FG}"      "${PRE_SPACE}"              "${POST_SPACE}"     ) || \
+        OS_ELEMENT=$(thin_element            ""             "${PROMPT_OS_ROOT_BG}"  "${PROMPT_OS_ROOT_FG}"                                                      )
+        ROOT_TAG=%B$(thin_element            "[ROOT]"       "230"                   "${PROMPT_OS_ROOT_FG}"      "${PRE_SPACE}"          )%b
+        ROOT_SEPARATOR=$(thin_element        $'\uE0B1'      "${PROMPT_ROOT_BG}"     "${PROMPT_EL_FG}"                                   )
         ROOT_PATH_ELEMENT="%/"
-        _VS_=$(thin_element                  $'\uE0B1'      "${PROMPT_HL_BG}"     "${PROMPT_EL_FG}")       # › (thin angle bracket separator)
-        PRE_HL_MIDDLE=$(thick_element        $'\uE0B0'      "${PROMPT_EL_FG}"     "${PROMPT_ROOT_FG}"       "${PROMPT_ROOT_BG}"     "${PROMPT_EL_FG}" )
-        PRE_HIGHLIGHT=$(thick_element        $'\uE0B0'      "${PROMPT_EL_FG}"     "${PROMPT_HL_BG}"       "${PROMPT_ROOT_BG}"     "${PROMPT_EL_FG}" )
-        POST_HIGHLIGHT=$(thick_element       $'\uE0B0'      "${PROMPT_EL_FG}"     "${PROMPT_ROOT_BG}"     "${PROMPT_normal_BG}"   "${PROMPT_EL_FG}"     " " )
-        # ROOT_SEPARATOR=$(thick_element       $'\uE0B0'      "${PROMPT_EL_FG}"     "${PROMPT_ROOT_BG}"     "${PROMPT_ROOT_BG}"     "${PROMPT_EL_FG}" )
-        ROOT_SEPARATOR=$(thin_element        $'\uE0B1'      "${PROMPT_ROOT_BG}"     "${PROMPT_EL_FG}"     )
+        _VS_=$(thin_element                  $'\uE0B1'      "${PROMPT_HL_BG}"       "${PROMPT_EL_FG}"                                   ) # › (thin angle bracket separator)
+        _VS1=$(thin_element                  $'\uE0B1'      "${PROMPT_OS_ROOT_BG}"  "${PROMPT_EL_FG}"           ""                          "${POST_SPACE}"     ) # › (thin angle bracket separator 1: without pre-space)
+        _VS2=$(thin_element                  $'\uE0B1'      "${PROMPT_OS_ROOT_BG}"  "${PROMPT_EL_FG}"                                   ) # › (thin angle bracket separator 2: without any space pre- or -post)
+        NO_HL_END_SEG=$(thick_element        $'\uE0B0'      "${PROMPT_EL_FG}"       "${PROMPT_ROOT_PreHL_BG}"   "${PROMPT_normal_BG}"       "${PROMPT_EL_FG}"       )
+        PRE_HL_MIDDLE=$(thick_element        $'\uE0B0'      "${PROMPT_EL_FG}"       "${PROMPT_ROOT_FG}"         "${PROMPT_ROOT_BG}"         "${PROMPT_EL_FG}"       )
+        PRE_HIGHLIGHT=$(thick_element        $'\uE0B0'      "${PROMPT_EL_FG}"       "${PROMPT_HL_BG}"           "${PROMPT_ROOT_BG}"         "${PROMPT_EL_FG}"       )
+        POST_HIGHLIGHT=$(thick_element       $'\uE0B0'      "${PROMPT_EL_FG}"       "${PROMPT_ROOT_BG}"         "${PROMPT_normal_BG}"       "${PROMPT_EL_FG}"   " " )
+        POST_HIGHLIGHT_LAST=$(thick_element  $'\uE0B0'      "${PROMPT_EL_FG}"       "${PROMPT_ROOT_BG}"         "${PROMPT_normal_BG}"       "${PROMPT_EL_FG}"       )
+        PROMPT_normal_CLR="%K{${PROMPT_ROOT_PreHL_BG}}%F{${PROMPT_ROOT_PreHL_FG}}"
+        NONE_ELEMENT="${NO_HL_END_SEG}"
     else
         # regular user elements
-        OS_ELEMENT=$(thin_element            "${OS_ICON}"   "${PROMPT_normal_BG}" "${PROMPT_OS_FG}"       "${PRE_SPACE}"          "${POST_SPACE}"   )
+        (( PROMPT_SHOW_OS_ICON )) && \
+        OS_ELEMENT=$(thin_element            "${OS_ICON}"   "${PROMPT_normal_BG}"   "${PROMPT_OS_FG}"           "${PRE_SPACE}"              "${POST_SPACE}"         ) || \
+        OS_ELEMENT=$(thin_element            ""             "${PROMPT_normal_BG}"   "${PROMPT_OS_FG}"                                   )
         ROOT_TAG=""
         ROOT_PATH_ELEMENT="%~"
-        _VS_=$(thin_element                  $'\uE0B1'      "${PROMPT_normal_BG}" "${PROMPT_EL_FG}")       # › (thin angle bracket separator)
-        PRE_HIGHLIGHT=$(thick_element        $'\uE0B0'      "${PROMPT_EL_FG}"     "${PROMPT_normal_BG}"   "${PROMPT_HL_BG}"       "${PROMPT_EL_FG}" )
-        POST_HIGHLIGHT=$(thick_element       $'\uE0B0'      "${PROMPT_EL_FG}"     "${PROMPT_HL_BG}"       "${PROMPT_normal_BG}"   "${PROMPT_EL_FG}"     " " )
+        _VS_=$(thin_element                  $'\uE0B1'      "${PROMPT_normal_BG}"   "${PROMPT_EL_FG}"                                   )                               # › (thin angle bracket separator)
+        _VS1=$(thin_element                  $'\uE0B1'      "${PROMPT_normal_BG}"   "${PROMPT_EL_FG}"           ""                          "${POST_SPACE}"         )   # › (thin angle bracket separator 1: without pre-space)
+        _VS2=$(thin_element                  $'\uE0B1'      "${PROMPT_normal_BG}"   "${PROMPT_EL_FG}"                                   )                               # › (thin angle bracket separator 2: without any space pre- or -post)
+        NO_HL_END_SEG=$(thin_element         $'\uE0B1'      "${PROMPT_normal_BG}"   "${PROMPT_EL_FG}"                                   )   # › (thin angle bracket separator 1: without pre-space)
+        PRE_HIGHLIGHT=$(thick_element        $'\uE0B0'      "${PROMPT_EL_FG}"       "${PROMPT_normal_BG}"       "${PROMPT_HL_BG}"           "${PROMPT_EL_FG}"       )
+        POST_HIGHLIGHT=$(thick_element       $'\uE0B0'      "${PROMPT_EL_FG}"       "${PROMPT_HL_BG}"           "${PROMPT_normal_BG}"       "${PROMPT_EL_FG}"   " " )
+        POST_HIGHLIGHT_LAST=$(thick_element  $'\uE0B0'      "${PROMPT_EL_FG}"       "${PROMPT_HL_BG}"           "${PROMPT_normal_BG}"       "${PROMPT_EL_FG}"       )
+        PROMPT_normal_CLR="%K{${PROMPT_normal_BG}}%F{${PROMPT_normal_FG}}"
+        NONE_ELEMENT="${_VS_}"
     fi
 
-    (( PROMPT_SHOW_OS_ICON )) || OS_ELEMENT=""
+    _VS_LAST_=$(thin_element                  $'\uE0B1'      "${PROMPT_normal_BG}"   "${PROMPT_EL_FG}"                                  )                               # › (thin angle bracket separator 2: without any space pre- or -post)
 
     PROMPT_TIME="${PROMPT_TIME_FORMAT:=%*}"
     PROMPT_USER="%n${${USER_WITH_MACHINE:#0}:+@%m}"
-    V_ENVIRON="(%F{magenta}${${VIRTUAL_ENV:t}}%f)"
+
+    V_ENVIRON="${${VIRTUAL_ENV:t}:-}"
+    NODE_INFO="$(command -v node >/dev/null 2>&1 && node --version 2>/dev/null)"
+
     # GIT_DETAILS=$([[ -d .git && -f "$ZDOTDIR/prompt/prompt-git-status.zsh" ]] && git_prompt_segment || echo "") # not yet available here
 }
 
@@ -110,21 +135,22 @@ function set_prompt_colours {
     COLOR_RESET="%f %k"
     PROMPT_COLOR_RESET="%f"
 
-    _VS_GIT_COLOR="${PROMPT_HIGHLIGHT_COLOR:-cyan}"
-    [[ $PROMPT_HIGHLIGHT == git ]] || _VS_GIT_COLOR="15"
+    _VS_GIT_BG="${PROMPT_HIGHLIGHT_COLOR:-cyan}"
+    [[ $PROMPT_HIGHLIGHT == git ]] || _VS_GIT_BG="15"
 
     PROMPT_HL_BG="${PROMPT_HIGHLIGHT_BODY:-"cyan"}"
     PROMPT_HL_FG="${PROMPT_HIGHLIGHT_TEXT:-"blue"}"
 
     PROMPT_normal_BG="${PROMPT_GENERAL_BODY:-"15"}"
     PROMPT_normal_FG="${PROMPT_GENERAL_TEXT:-"241"}" # or black
-    PROMPT_normal_CLR="%K{${PROMPT_normal_BG}}%F{${PROMPT_normal_FG}}"
 
     PROMPT_ROOT_BG="${PROMPT_GENERAL_ROOT_BODY:-"red"}"
     PROMPT_ROOT_FG="${PROMPT_GENERAL_ROOT_TEXT:-"15"}"
 
     PROMPT_ROOT_PreHL_BG="${PROMPT_ROOT_PreHL_BODY:-"cyan"}"
     PROMPT_ROOT_PreHL_FG="${PROMPT_ROOT_PreHL_TEXT:-"15"}"
+
+    PROMPT_ROOT_NORMAL="%K{${PROMPT_normal_BG}}%F{${PROMPT_normal_FG}}"
 
     PROMPT_EL_FG="${PROMPT_ELEMENT_COLOR:-"black"}"
 
@@ -156,7 +182,7 @@ function set_prompt_colours {
 if [[ "$__last_uid" != "$(id -u)" ]]; then
     set_icons
     set_prompt_colours
-    set_elements
+    # set_elements
     __last_uid="$(id -u)"
 fi
 # --------------------------------=== end ===--------------------------------
