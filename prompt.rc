@@ -1,7 +1,8 @@
+#!/usr/bin/env zsh
 # --- Default prompt configuration ---
 # =====================================================================
 #  📦 PROMPT RUNTIME CONFIGURATION
-#       (A duplicate of the original prompt-defaults. This is intended
+#       (A kinda duplicate of the original prompt-defaults. This is intended
 #       to be symlinked to ~/.config/.promptrc file for regular use)
 #
 #  User-tweakable settings for prompt behaviour, colours, icons, logic
@@ -43,14 +44,25 @@ CUSTOM_OS_ICON=""      # e.g., "" or "🐧"
 # Override branch icon
 CUSTOM_BRANCH_ICON=""
 
-# Dirty / Clean icons
-ICON_DIRTY="✗"
-ICON_CLEAN="✓"
+# # Dirty / Clean icons
+# ICON_DIRTY="✗"
+# ICON_CLEAN="✓"
 
-# Remote service icons
-ICON_GITHUB="GH"
-ICON_GITLAB="GL"
+# # Remote service icons
+# typeset -g PROMPT_GH_ICON="󰊤"
+# typeset -g PROMPT_GL_ICON="󰮠"
+# typeset -g PROMPT_GH_ICON=${PROMPT_GH_ICON:-""}
+# typeset -g PROMPT_GL_ICON=${PROMPT_GL_ICON:-""}
+# ICON_GITHUB="󰊤"
+# ICON_GITLAB="󰮠"
 
+# --- ICON-Colors ------------------------------------------------------
+# These colors should be only one of:
+# black, red, green, yellow, blue, magenta, cyan, white, default
+GH_ICON_COLOR=
+GL_ICON_COLOR=
+GH_REMOTE_COLOR=
+GL_REMOTE_COLOR=
 
 # --- Prompt Layout ----------------------------------------------------
 

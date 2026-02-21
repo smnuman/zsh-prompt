@@ -34,6 +34,7 @@ function thin_element {
     fi
 }
 
+
 function set_icons {
     # 🌀 OS icon
     OS_ICON=${CUSTOM_OS_ICON:-""}
@@ -54,19 +55,25 @@ function set_icons {
         msys*|cygwin*|win32)    OS_ICON=$'\uF17A' ;;                    # Windows (Git Bash or WSL)
         *)                      OS_ICON="❓" ;;                         # Unknown OS
     esac
-    ICON_HIST=$(type history_mode_icon >/dev/null 2>&1 && history_mode_icon || echo "")
+    # ICON_HIST=$(type history_mode_icon >/dev/null 2>&1 && history_mode_icon || echo "")
+    ICON_NEW_REPO="✨"
     ICON_BRANCH=$'\uE0A0'
+    ICON_DETACHED="🪂"
     ICON_CLEAN="✓"             # in green
     ICON_DIRTY="✗"             # in red
     ICON_AHEAD="↑"
     ICON_BEHIND="↓"
     ICON_UPSTREAM="⎋"          # in green
     ICON_NO_UPSTREAM="⎋"       # in red
-    ICON_MERGE="🔀"
+    ICON_MERGE=$'\uF419'       # "🔀"
     ICON_REBASE="⟳"
+    ICON_CHERRY_PICK="🍒"
+    ICON_REVERT="↩"
     PRE_SPACE=" "
     POST_SPACE=" "
     NO_SPACE=""
+    ICON_GITHUB="󰊤"
+    ICON_GITLAB="󰮠"
 }
 
 # Helper function to reset dynamic elements used in prompt-init.zsh
@@ -74,6 +81,20 @@ function set_dynamic_elements {
     V_ENVIRON="${${VIRTUAL_ENV:t}:-}"
     NODE_INFO="$(command -v node >/dev/null 2>&1 && node --version 2>/dev/null)"
 }
+
+# Helper function to get prompt path based on mode of the path
+function __prompt_path() {
+    local mode="${PROMPT_PATH_MODE%%:*}" feature="${PROMPT_PATH_MODE#*:}"
+    (( EUID==0 )) && print -r -- "%~" || case "$mode" in
+        full)  print -r -- "%~"  ;;
+        short) print -r -- "%1~" ;;
+        smart) [[ ${feature} == "git" && $(git rev-parse --show-toplevel 2>/dev/null) ]] \
+                    && print -r -- "%3~" \
+                    || [[ $PWD == $HOME* ]] && print -r -- "%~" || print -r -- "%2~" ;;
+        *)     print -r -- "%~" ;;
+    esac
+}
+
 
 # Helper function to set various elements used in the prompt-segments
 function set_elements {
@@ -107,7 +128,7 @@ function set_elements {
         OS_ELEMENT=$(thin_element            "${OS_ICON}"   "${PROMPT_normal_BG}"   "${PROMPT_OS_FG}"           "${PRE_SPACE}"              "${POST_SPACE}"         ) || \
         OS_ELEMENT=$(thin_element            ""             "${PROMPT_normal_BG}"   "${PROMPT_OS_FG}"                                   )
         ROOT_TAG=""
-        ROOT_PATH_ELEMENT="%~"
+        ROOT_PATH_ELEMENT="%25<...<%~%<<" # '%~'  # "%~"
         _VS_=$(thin_element                  $'\uE0B1'      "${PROMPT_normal_BG}"   "${PROMPT_EL_FG}"                                   )                               # › (thin angle bracket separator)
         _VS1=$(thin_element                  $'\uE0B1'      "${PROMPT_normal_BG}"   "${PROMPT_EL_FG}"           ""                          "${POST_SPACE}"         )   # › (thin angle bracket separator 1: without pre-space)
         _VS2=$(thin_element                  $'\uE0B1'      "${PROMPT_normal_BG}"   "${PROMPT_EL_FG}"                                   )                               # › (thin angle bracket separator 2: without any space pre- or -post)
@@ -119,6 +140,7 @@ function set_elements {
         NONE_ELEMENT="${_VS_}"
     fi
 
+    ROOT_PATH_ELEMENT=$(__prompt_path)                                                                                                                                  # path element for root vs normal user
     _VS_LAST_=$(thin_element                  $'\uE0B1'      "${PROMPT_normal_BG}"   "${PROMPT_EL_FG}"                                  )                               # › (thin angle bracket separator 2: without any space pre- or -post)
 
     PROMPT_TIME="${PROMPT_TIME_FORMAT:=%*}"
@@ -179,7 +201,7 @@ function set_prompt_colours {
 }
 
 # ----------------=== launching functions at shell change ===----------------
-if [[ "$__last_uid" != "$(id -u)" ]]; then
+if [[ "$__last_uid" != "$(id -u)" ]]; then  # Detect user change (e.g., sudo -s)
     set_icons
     set_prompt_colours
     # set_elements

@@ -61,3 +61,6 @@ credentials/
 *_old*.*
 *_old_*.*
 *old_*.*
+*-old*.*
+*-old-*.*
+*old-*.*
