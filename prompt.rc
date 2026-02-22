@@ -1,5 +1,92 @@
 #!/usr/bin/env zsh
-# --- Default prompt configuration ---
+# =====================================================================
+#  📦 PROMPT RUNTIME CONFIGURATION  (~/.config/.promptrc)
+#
+#  User-editable overrides for prompt behaviour, colours, icons, logic.
+#  This file is a proxy of prompt-defaults — every variable here
+#  overrides the corresponding default.  If this file is missing or
+#  corrupted, prompt-defaults provides a safe fallback.
+#
+#  Symlinked to: ~/.config/.promptrc
+# =====================================================================
+
+# --- General Behaviour ------------------------------------------------
+
+# Clean or decorated style:
+# 0 → plain mode (no background colours)
+# 1 → with background (default)
+PROMPT_PLAIN=0
+
+# --- Prompt Layout ----------------------------------------------------
+
+# Order of prompt segments (left to right)
+# Valid values: time user node venv path git none
+PROMPT_LAYOUT=(time path git)
+
+# Which segment to visually highlight (thick separators):
+#   path | git | time | user | venv | none
+# - empty defaults to "path"
+PROMPT_HIGHLIGHT=
+
+# Auto-highlight user segment when root (1=yes, 0=no)
+PROMPT_HL_ROOT_USER=1
+
+# Default highlight color
+PROMPT_HIGHLIGHT_COLOR="cyan"
+
+# Path display mode: full | short | smart | smart:git
+PROMPT_PATH_MODE="smart"
+
+# Enable right-prompt segments (1=yes, 0=no)
+PROMPT_RIGHT_SEGMENTS=1
+
+# --- Segment Toggles --------------------------------------------------
+
+PROMPT_SHOW_OS_ICON=1       # Show OS icon in prompt
+PROMPT_SHOW_TIME=1          # Show time segment
+PROMPT_SHOW_USER=1          # Show user segment
+USER_WITH_MACHINE=0         # Show user@host (1) or just user (0)
+PROMPT_SHOW_HISTORY_MODE=1  # Show shared/private history icon
+PROMPT_SHOW_NODE=1          # Show Node.js version
+PROMPT_SHOW_VENV=1          # Show Python virtualenv name
+PROMPT_SHOW_PATH=1          # Show current path
+PROMPT_SHOW_GIT=1           # Show git info
+
+# --- Time Format ------------------------------------------------------
+
+# Uncomment one:
+PROMPT_TIME_FORMAT="%D{%H:%M}"
+# PROMPT_TIME_FORMAT="%D{%I:%M %p}"         # 12-hour with AM/PM
+# PROMPT_TIME_FORMAT="%D{%a %d %b %H:%M}"   # Day + date
+
+# --- Git Segment ------------------------------------------------------
+
+SHOW_REMOTE=1               # Show remote name (1=show, 0=hide)
+PRE_REMOTE=1                # Remote before (1) or after (0) branch/status
+
+# --- Colour Scheme Selection ------------------------------------------
+
+# Available modes: light | dark | auto
+PROMPT_COLOR_MODE="auto"
+
+# Override autodetected scheme (optional)
+FORCE_SCHEME=""             # set to "light" or "dark" to force
+
+# --- Icons ------------------------------------------------------------
+
+CUSTOM_OS_ICON=""           # e.g., "" or "🐧"
+CUSTOM_BRANCH_ICON=""
+
+# --- Icon Colors ------------------------------------------------------
+# Leave empty to use defaults from prompt-defaults
+# Valid: black, red, green, yellow, blue, magenta, cyan, white, default
+GH_ICON_COLOR=
+GL_ICON_COLOR=
+GH_REMOTE_COLOR=
+GL_REMOTE_COLOR=
+
+# =====================================================================
+#                     END OF PROMPTRC
 # =====================================================================
 #  📦 PROMPT RUNTIME CONFIGURATION
 #       (A kinda duplicate of the original prompt-defaults. This is intended
