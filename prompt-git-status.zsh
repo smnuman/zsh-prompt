@@ -60,12 +60,12 @@ function __git_remote_segment() {
   if git rev-parse --is-inside-work-tree &>/dev/null; then
     while read -r name url _; do
       case "$url" in
-        *github.com*)   github="$name"
+        *github.com*)   github="$r"
                         icon="$(__git_icon_or_fallback "$ICON_GITHUB" "GH:")"
                         git_icon="%F{$GH_ICON_CLR}${icon}%f"
                         git_remote="%F{$GH_REMOTE_CLR}$github%f"
                         ;;
-        *gitlab.com*)   gitlab="$name"
+        *gitlab.com*)   gitlab="$r"
                         icon="$(__git_icon_or_fallback "$ICON_GITLAB" "GL:")"
                         git_icon="%F{$GL_ICON_CLR}${icon}%f"
                         git_remote="%F{$GL_REMOTE_CLR}$gitlab%f"
@@ -102,12 +102,12 @@ git_remote_segment() {
     url="$(git remote get-url "$r" 2>/dev/null)" || continue
 
     case "$url" in
-    *github.com*)   github="$name"
+    *github.com*)   github="$r"
                     icon="$(__git_icon_or_fallback "$ICON_GITHUB" "GH")"
                     git_icon="%F{$GH_ICON_CLR}${icon}%f"
                     git_remote="%F{$GH_REMOTE_CLR}$github%f"
                     ;;
-    *gitlab.com*)   gitlab="$name"
+    *gitlab.com*)   gitlab="$r"
                     icon="$(__git_icon_or_fallback "$ICON_GITLAB" "GL")"
                     git_icon="%F{$GL_ICON_CLR}${icon}%f"
                     git_remote="%F{$GL_REMOTE_CLR}$gitlab%f"

@@ -7,7 +7,7 @@ function prompt-setup {
     set_elements    # calling it from prompt-utils.zsh
 
     # 🌱 Git segment using 'prompt-git-status.zsh' in ~/.config/zsh/prompt/
-    GIT_DETAILS=$([[ -d .git && -f "$ZDOTDIR/prompt/prompt-git-status.zsh" ]] &&  git_prompt_segment 2>/dev/null || echo "")
+    GIT_DETAILS=$([[ -e .git && -f "$ZDOTDIR/prompt/prompt-git-status.zsh" ]] &&  git_prompt_segment 2>/dev/null || echo "")
 
     # GIT_DETAILS=$([[ -d .git && -f "${ZDOTDIR}/prompt/prompt-git-zshvcs.zsh" ]] && { source "${ZDOTDIR}/prompt/prompt-git-zshvcs.zsh" 2>/dev/null && echo "${vcs_info_msg_0_}"; } || echo "")
     # GIT_DETAILS=$(
