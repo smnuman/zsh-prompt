@@ -50,7 +50,7 @@ function git_prompt_segment() {
     (( $SHOW_REMOTE )) && REMOTES=$(git_remote_segment) && echo "$(set-remote ${LOCALS} ${REMOTES})" || echo "${LOCALS}"
 
   else
-    (( SHOW_REMOTE )) && echo "GIT:NaR" || echo ""
+    (( $SHOW_REMOTE )) && echo "GIT:NaR" || echo ""
   fi
 }
 

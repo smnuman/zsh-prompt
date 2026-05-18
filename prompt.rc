@@ -1,4 +1,9 @@
 #!/usr/bin/env zsh
+# # prevent double sourcing
+# [[ -n "${__PROMPT_RC_LOADED:-}" ]] && return
+# print "[prompt.rc loaded]"
+# __PROMPT_RC_LOADED=1
+# echo "PROMPT_RC_LOADED: ${__PROMPT_RC_LOADED}"
 # =====================================================================
 #  📦 PROMPT RUNTIME CONFIGURATION  (~/.config/.promptrc)
 #
@@ -10,154 +15,139 @@
 #  Symlinked to: ~/.config/.promptrc
 # =====================================================================
 
-# --- General Behaviour ------------------------------------------------
+# --- General Behaviour -----------------------------------------------
 
-# Clean or decorated style:
-# 0 → plain mode (no background colours)
-# 1 → with background (default)
+# ---- Ornamental: Clean or Decorated ---------------------------------
+# 0 → with background (default)
+# 1 → plain mode (no background colours)
 PROMPT_PLAIN=0
 
-# --- Prompt Layout ----------------------------------------------------
+# --- Colour Scheme Selection ------------------------------------------
 
+# Available modes: light | dark | auto (empty default)
+PROMPT_COLOR_MODE=
+
+# --- Prompt Layout ---------------------------------------------------
+# ---------------------- Layout & Behaviour ---------------------------
 # Order of prompt segments (left to right)
 # Valid values: time user node venv path git none
-PROMPT_LAYOUT=(time path git)
+# Examples: === === (just uncomment one to use, comment to skip) === ===
+# PROMPT_LAYOUT_SEQUENCE=(time user node venv path git)
+# PROMPT_LAYOUT_SEQUENCE=(time user node path venv git)
+# PROMPT_LAYOUT_SEQUENCE=(time user venv node git path)
+# PROMPT_LAYOUT_SEQUENCE=(time path venv node git user)
+# PROMPT_LAYOUT_SEQUENCE=(time path node venv user git)
+# PROMPT_LAYOUT_SEQUENCE=(time node venv path git)
+# PROMPT_LAYOUT_SEQUENCE=(time node venv git path)
+# PROMPT_LAYOUT_SEQUENCE=(time user git path)
+# PROMPT_LAYOUT_SEQUENCE=(time user path git)
+# PROMPT_LAYOUT_SEQUENCE=(user time path git)
+# PROMPT_LAYOUT_SEQUENCE=(path time user git)
+# PROMPT_LAYOUT_SEQUENCE=(time path user git)
+PROMPT_LAYOUT_SEQUENCE=(time path git)
+# PROMPT_LAYOUT_SEQUENCE=(time git path)
+# PROMPT_LAYOUT_SEQUENCE=(user path git)
+# PROMPT_LAYOUT_SEQUENCE=(time git none)
+# PROMPT_LAYOUT_SEQUENCE=(time path)
+# PROMPT_LAYOUT_SEQUENCE=(path git)
+# PROMPT_LAYOUT_SEQUENCE=(git path)
+# PROMPT_LAYOUT_SEQUENCE=(user path)
+# PROMPT_LAYOUT_SEQUENCE=(venv path)
+# PROMPT_LAYOUT_SEQUENCE=(node path)
+# PROMPT_LAYOUT_SEQUENCE=(time)
+# PROMPT_LAYOUT_SEQUENCE=(user)
+# PROMPT_LAYOUT_SEQUENCE=(path)
+# PROMPT_LAYOUT_SEQUENCE=(git)
+# PROMPT_LAYOUT_SEQUENCE=(none)
 
-# Which segment to visually highlight (thick separators):
-#   path | git | time | user | venv | none
+# Which segment to visually highlight (to show between thick separators):
+#   time | user | node | venv | path | git | none
 # - empty defaults to "path"
 PROMPT_HIGHLIGHT=
 
-# Auto-highlight user segment when root (1=yes, 0=no)
-PROMPT_HL_ROOT_USER=1
-
-# Default highlight color
-PROMPT_HIGHLIGHT_COLOR="cyan"
+# Auto-highlight user segment when root (1=yes[default], 0=no)
+PROMPT_HIGHLIGHT_ROOT_USER=
 
 # Path display mode: full | short | smart | smart:git
-PROMPT_PATH_MODE="smart"
+PROMPT_PATH_DISPLAY_MODE="smart"
 
-# Enable right-prompt segments (1=yes, 0=no)
-PROMPT_RIGHT_SEGMENTS=1
+# Enable right-prompt segments (1=yes[default], 0=no)
+PROMPT_RIGHT_SEGMENTS=
 
-# --- Segment Toggles --------------------------------------------------
+# --- Prompt Segment Toggles --------------------------------------------------
+# the PROMPT_LAYOUT_SEQUENCE above depends on these toggles to show/hide 
+# segments. For example, if PROMPT_SHOW_NODE=0, then the "node" segment will 
+# not show even if it's in the layout sequence.
 
-PROMPT_SHOW_OS_ICON=1       # Show OS icon in prompt
-PROMPT_SHOW_TIME=1          # Show time segment
-PROMPT_SHOW_USER=1          # Show user segment
-USER_WITH_MACHINE=0         # Show user@host (1) or just user (0)
-PROMPT_SHOW_HISTORY_MODE=1  # Show shared/private history icon
-PROMPT_SHOW_NODE=1          # Show Node.js version
-PROMPT_SHOW_VENV=1          # Show Python virtualenv name
-PROMPT_SHOW_PATH=1          # Show current path
-PROMPT_SHOW_GIT=1           # Show git info
+PROMPT_SHOW_OS_ICON=1                   # Show OS icon in prompt
+PROMPT_SHOW_TIME=1                      # Show time segment
+PROMPT_SHOW_USER=1                      # Show user segment
+PROMPT_SHOW_USER_WITH_MACHINE=0         # Show user@host (1) or just user (0)
+PROMPT_SHOW_HISTORY_MODE=1              # Show shared/private history icon
+PROMPT_SHOW_NODE=1                      # Show Node.js version
+PROMPT_SHOW_VENV=1                      # Show Python virtualenv name
+PROMPT_SHOW_PATH=1                      # Show current path
+PROMPT_SHOW_GIT=1                       # Show git info
+# --- Git Segment ------
+PROMPT_GIT_SHOW_REMOTE=1                # Show remote name (1=show, 0=hide)
+PROMPT_GIT_PRE_REMOTE=1                 # Remote before (1) or after (0) branch/status
 
 # --- Time Format ------------------------------------------------------
+# Time format (default: 24-hour HH:MM:SS)
+# •	PROMPT_TIME_FORMAT="%D{%H:%M}"
+# •	PROMPT_TIME_FORMAT="%D{%I:%M %p}" → 12-hour with AM/PM
+# •	PROMPT_TIME_FORMAT="%D{%a %d %b %H:%M}" → Day + date
+# Uncomment one of the following lines to set custom time format:
 
-# Uncomment one:
+# PROMPT_TIME_FORMAT="%D{%a %d %b %H:%M}"   # equivalent to "%*"
 PROMPT_TIME_FORMAT="%D{%H:%M}"
 # PROMPT_TIME_FORMAT="%D{%I:%M %p}"         # 12-hour with AM/PM
 # PROMPT_TIME_FORMAT="%D{%a %d %b %H:%M}"   # Day + date
 
-# --- Git Segment ------------------------------------------------------
 
-SHOW_REMOTE=1               # Show remote name (1=show, 0=hide)
-PRE_REMOTE=1                # Remote before (1) or after (0) branch/status
-
-# --- Colour Scheme Selection ------------------------------------------
-
-# Available modes: light | dark | auto
-PROMPT_COLOR_MODE="auto"
-
-# Override autodetected scheme (optional)
-FORCE_SCHEME=""             # set to "light" or "dark" to force
+# --- Colour Overrides --------------------------------------------------
+# Uncomment any to override prompt-defaults colours.
+# Names use _BODY (background), _TEXT (foreground), _COLOR (single).
+# -----------------------------------------------------------------------
+# PROMPT_HIGHLIGHT_BODY="cyan"       # highlighted segment background
+# PROMPT_HIGHLIGHT_TEXT="white"      # highlighted segment text
+# PROMPT_GENERAL_BODY="15"           # normal segment background
+# PROMPT_GENERAL_TEXT="241"          # normal segment foreground
+# PROMPT_ROOT_BODY="red"             # root segment background
+# PROMPT_ROOT_TEXT="15"              # root segment foreground
+# PROMPT_ROOT_PREHL_BODY="cyan"      # root pre-highlight background
+# PROMPT_ROOT_PREHL_TEXT="15"        # root pre-highlight foreground
+# PROMPT_ELEMENT_COLOR="black"       # separator arrows colour
+# PROMPT_OS_ROOT_BODY="cyan"         # root OS icon background
+# PROMPT_OS_ROOT_TEXT="red"          # root OS icon foreground
+# PROMPT_OS_TEXT="blue"              # normal OS icon foreground
+# PROMPT_PROMPT_COLOR="yellow"       # prompt $/# colour
 
 # --- Icons ------------------------------------------------------------
 
-CUSTOM_OS_ICON=""           # e.g., "" or "🐧"
-CUSTOM_BRANCH_ICON=""
+CUSTOM_OS_ICON=           # e.g., "" or "🐧"
+CUSTOM_BRANCH_ICON=
 
 # --- Icon Colors ------------------------------------------------------
+autoload -Uz colors && colors
+typeset -gA fg
+
 # Leave empty to use defaults from prompt-defaults
 # Valid: black, red, green, yellow, blue, magenta, cyan, white, default
+#       or the colors from below (256-color palette):
+
+fg[orange]=208
+fg[grey]=240
+fg[pink]=205
+fg[golden]=220
+fg[gold]=214
+
 GH_ICON_COLOR=
 GL_ICON_COLOR=
 GH_REMOTE_COLOR=
 GL_REMOTE_COLOR=
-
-# =====================================================================
-#                     END OF PROMPTRC
-# =====================================================================
-#  📦 PROMPT RUNTIME CONFIGURATION
-#       (A kinda duplicate of the original prompt-defaults. This is intended
-#       to be symlinked to ~/.config/.promptrc file for regular use)
-#
-#  User-tweakable settings for prompt behaviour, colours, icons, logic
-# =====================================================================
-
-# --- General Behaviour ------------------------------------------------
-
-# Show remote before (1) or after (0) branch/state
-PRE_REMOTE=1
-
-# Show remote segment at all (1 = show, 0 = hide)
-SHOW_REMOTE=1
-
-# Enable time in prompt (1 = show, 0 = hide)
-PROMPT_SHOW_TIME=1
-
-# Show virtualenv name: 1=yes, 0=no
-PROMPT_SHOW_VENV=1
-
-# Clean or decorated style:
-# 0 → plain mode (no background colours)
-# 1 → with background (default)
-PROMPT_CLEAN=1
-
-# --- Colour Scheme Selection -----------------------------------------
-
-# Available modes: light | dark | auto
-PROMPT_COLOR_MODE="auto"
-
-# Override autodetected scheme (optional)
-FORCE_SCHEME=""    # set to "light" or "dark" to force
-
-
-# --- Icons ------------------------------------------------------------
-
-# Override OS icon for fun
-CUSTOM_OS_ICON=""      # e.g., "" or "🐧"
-
-# Override branch icon
-CUSTOM_BRANCH_ICON=""
-
-# # Dirty / Clean icons
-# ICON_DIRTY="✗"
-# ICON_CLEAN="✓"
-
-# # Remote service icons
-# typeset -g PROMPT_GH_ICON="󰊤"
-# typeset -g PROMPT_GL_ICON="󰮠"
-# typeset -g PROMPT_GH_ICON=${PROMPT_GH_ICON:-""}
-# typeset -g PROMPT_GL_ICON=${PROMPT_GL_ICON:-""}
-# ICON_GITHUB="󰊤"
-# ICON_GITLAB="󰮠"
-
-# --- ICON-Colors ------------------------------------------------------
-# These colors should be only one of:
-# black, red, green, yellow, blue, magenta, cyan, white, default
-GH_ICON_COLOR=
-GL_ICON_COLOR=
-GH_REMOTE_COLOR=
-GL_REMOTE_COLOR=
-
-# --- Prompt Layout ----------------------------------------------------
-
-# Change path style: full, short, smart
-PROMPT_PATH_MODE="smart"
-
-# Enable an additional right-prompt tag?
-PROMPT_RIGHT_SEGMENTS=1
+GIT_REMOTE_ACTIVE_COLOR=
+GIT_REMOTE_PASSIVE_COLOR=
 
 # =====================================================================
 #                     END OF PROMPTRC

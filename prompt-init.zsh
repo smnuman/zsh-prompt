@@ -45,7 +45,7 @@ function prompt-setup {
     local max_seg_len=7
 
     # default fallback layout if none specified in the PROMPTRC
-    PROMPT_DEFAULT_LAYOUT=(time user venv path git)
+    PROMPT_DEFAULT_LAYOUT=(time path git)
     # Use PROMPT_LAYOUT from PROMPTRC or default
     PROMPT_LAYOUT=("${PROMPT_LAYOUT[@]:-${PROMPT_DEFAULT_LAYOUT[@]}}")
 
@@ -65,7 +65,7 @@ function prompt-setup {
 
     # Find index of PATH in layout
     for seg in "${SEGMENTS[@]}"; do
-        [[ "$seg" == "${PROMPT_HIGHLIGHT:-path}" ]]                             && highlight_index=$idx
+        [[ "$seg" == "${PROMPT_HL}" ]]                                    && highlight_index=$idx
         [[ "$seg" == "user" && $EUID == 0 && $PROMPT_HL_ROOT_USER == 1 ]]       && user_index=$idx
         (( idx++ ))
     done

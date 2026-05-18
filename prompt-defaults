@@ -9,139 +9,11 @@
 #  Modify ~/.config/zsh/prompt/prompt.rc to tweak values
 # =====================================================================
 
-# Clean or decorated style:
-# 1 → plain mode (no background colours)
-# 0 → with background (default)
-PROMPT_PLAIN=0
+PROMPT_MODE=${PROMPT_PLAIN:=0}      # 0=with bg, 1=plain mode (was PROMPT_PLAIN)
 
-# --- Prompt Layout ----------------------------------------------------
-# Change path style: full, short, smart
-# PROMPT_PATH_MODE="smart"
-# --- move to prompt.rc ---------------
-# Path display modes:
-#   full
-#   short
-#   smart
-#   smart:git
-: ${PROMPT_PATH_MODE:=short:git}
-# ------------ move ends ---------------
-# Enable an additional right-prompt tag?
-PROMPT_RIGHT_SEGMENTS=1                       # 1 = enable, 0 = disable
-RPOMPT_LAYOUT=(none)
+PROMPT_PATH_MODE=${PROMPT_PATH_DISPLAY_MODE:="smart:git"}   # Path display modes: full, short, smart, smart:git
 
-# =====================================================================
-#               PROMPT with Background - CONFIGURATION
-# =====================================================================
-
-# ---------------------- Layout & Behaviour ---------------------------
-# Order of prompt segments (left to right)
-# Valid values: time user node venv path git none
-# Examples: === === (just uncomment one to use, comment to skip) === ===
-# PROMPT_LAYOUT=(time user node venv path git)
-# PROMPT_LAYOUT=(time user node path venv git)
-# PROMPT_LAYOUT=(time user venv node git path)
-# PROMPT_LAYOUT=(time path venv node git user)
-# PROMPT_LAYOUT=(time path node venv user git)
-# PROMPT_LAYOUT=(time node venv path git)
-# PROMPT_LAYOUT=(time node venv git path)
-# PROMPT_LAYOUT=(time user git path)
-# PROMPT_LAYOUT=(time user path git)
-# PROMPT_LAYOUT=(user time path git)
-# PROMPT_LAYOUT=(path time user git)
-# PROMPT_LAYOUT=(time path user git)
-PROMPT_LAYOUT=(time path git)
-# PROMPT_LAYOUT=(time git path)
-# PROMPT_LAYOUT=(user path git)
-# PROMPT_LAYOUT=(time git none)
-# PROMPT_LAYOUT=(time path)
-# PROMPT_LAYOUT=(path git)
-# PROMPT_LAYOUT=(git path)
-# PROMPT_LAYOUT=(user path)
-# PROMPT_LAYOUT=(venv path)
-# PROMPT_LAYOUT=(node path)
-# PROMPT_LAYOUT=(time)
-# PROMPT_LAYOUT=(user)
-# PROMPT_LAYOUT=(path)
-# PROMPT_LAYOUT=(git)
-# PROMPT_LAYOUT=(none)
-
-# ---------------------- Segment Highlighting --------------------------
-# Choose which segment to highlight:
-#   (path | git | time | user | venv | none)
-# - default is "path" if not set
-# - "none" disables highlighting entirely
-# - only one segment can be highlighted at a time
-# - the user "root" segment is highlighted automatically if user is
-#   root and opted for in LAYOUT list above
-PROMPT_HIGHLIGHT=
-PROMPT_HL_ROOT_USER=1       # Highlighting user segment, when user is root (1=yes, 0=no)
-# default higlight color is "cyan"
-PROMPT_HIGHLIGHT_COLOR="cyan"
-
-# ------------------ Segment Toggles (admin use) -------------------------
-
-#                     Operating System's Icon
-#                     -----------------------
-# SHOWS the Operating system Identifier Icon (to modify the ICON itself see
-# Icons configuration part below)
-PROMPT_SHOW_OS_ICON=1       # Show OS icon in prompt? (1 = show, 0 = hide)
-
-#                           User Segment
-#                           ------------
-# SHOWS THE LOCALS USER in the PROMPT
-PROMPT_SHOW_USER=1          # Show user in prompt? (1 = show, 0 = hide)
-USER_WITH_MACHINE=0         # Show machine name with user(like: user@host)? (1 = show, 0 = hide)
-
-#                          HISTORY segement
-#                          ---------------
-# HISTORY MODE SHOWS IF THE HISTORY IS PRIVATE or SHARED
-PROMPT_SHOW_HISTORY_MODE=1  # Show history mode icon in prompt? (1 = show, 0 = hide)
-
-#                          Time Segment
-#                          ------------
-# Shows time with possible various formats. Choose format below.
-PROMPT_SHOW_TIME=1          # Enable time in prompt (1 = show, 0 = hide)
-# Time format (default: 24-hour HH:MM:SS)
-# •	PROMPT_TIME_FORMAT="%D{%H:%M}"
-# •	PROMPT_TIME_FORMAT="%D{%I:%M %p}" → 12-hour with AM/PM
-# •	PROMPT_TIME_FORMAT="%D{%a %d %b %H:%M}" → Day + date
-# Uncomment one of the following lines to set custom time format:
-# PROMPT_TIME_FORMAT="%D{%a %d %b %H:%M}"   # equivalent to "%*"
-PROMPT_TIME_FORMAT="%D{%H:%M}"
-# PROMPT_TIME_FORMAT="%D{%I:%M %p}"         # → 12-hour with AM/PM
-# PROMPT_TIME_FORMAT="%D{%a %d %b %H:%M}"   # → Day + date
-
-#                       Node.js Segment
-#                       ---------------
-# Shows the current Node.js version if in use
-PROMPT_SHOW_NODE=1          # Show Node.js version: 1=yes, 0=no
-
-#                         Virtualenv Segment
-#                         ------------------
-# Shows the name of the current Python virtual environment
-PROMPT_SHOW_VENV=1          # Show virtualenv name: 1=yes, 0=no
-
-#                          GIT Segment
-#                          -----------
-PROMPT_SHOW_GIT=1           # Show git info in prompt: 1=yes, 0=no
-SHOW_REMOTE=1               # Show remote segment at all (1 = show, 0 = hide)
-PRE_REMOTE=1                # Show remote before (1) or after (0) branch/state
-#                       Remote service icons
-ICON_GITHUB="\uF09B"
-ICON_GITLAB="\uF296"
-
-#                        Path Segment
-#                        ------------
-PROMPT_SHOW_PATH=1          # Show current path in prompt: 1=yes, 0=no
-
-
-# ====================================================================
-#               PROMPT auto background -- Configuration
-# ====================================================================
-
-# --------------------- Colour Scheme Selection ----------------------
-# Available modes: light | dark | auto
-PROMPT_COLOR_MODE="auto"
+PROMPT_CLR_MODE=${PROMPT_COLOR_MODE:="auto"}            # Available modes: light | dark | auto (auto detects terminal background color)
 
 # # When running in a light terminal background
 # COLOR_SCHEME_LIGHT=(
@@ -157,8 +29,56 @@ PROMPT_COLOR_MODE="auto"
 #   ROOT_PROMPT_COLOR=" %F{229}"
 # )
 
-# Override autodetected scheme (optional)
-FORCE_SCHEME=""    # set to "light" or "dark" to force
+# (( ${+PROMPT_LAYOUT_SEQUENCE} )) || PROMPT_LAYOUT_SEQUENCE=(time path git)
+# PROMPT_LAYOUT=("${PROMPT_LAYOUT_SEQUENCE[@]}")
+PROMPT_LAYOUT=("${(@)PROMPT_LAYOUT_SEQUENCE:=(time path git)}")
+
+PROMPT_HL=${PROMPT_HIGHLIGHT:-path}    # Segment to highlight (default: path)
+PROMPT_HL_ROOT_USER=${PROMPT_HIGHLIGHT_ROOT_USER:-1}       # Highlighting user segment, when user is root (1=yes, 0=no)
+
+RPROMPT_SEGMENTS=${PROMPT_RIGHT_SEGMENTS:=1}    # right prompt segments enabled (1=yes, 0=no)
+RPOMPT_LAYOUT=
+
+# ------------------ Segment Toggles (admin use) -------------------------
+PROMPT_OS_ICON="${PROMPT_SHOW_OS_ICON:=1}"                  # Show OS icon in prompt? (1 = show, 0 = hide)  
+PROMPT_TIME="${PROMPT_SHOW_TIME:=1}"                        # Show time segment? (1 = show, 0 = hide)  
+PROMPT_USER="${PROMPT_SHOW_USER:=1}"                        # Show user segment? (1 = show, 0 = hide)  
+USER_WITH_MACHINE="${PROMPT_SHOW_USER_WITH_MACHINE:=0}"     # Show user@host (1) or just user (0)? (1 = show, 0 = hide)  
+PROMPT_HISTORY_MODE="${PROMPT_SHOW_HISTORY_MODE:=1}"        # Show shared/private history icon? (1 = show, 0 = hide)  
+PROMPT_NODE="${PROMPT_SHOW_NODE:=1}"                        # Show Node.js version? (1 = show, 0 = hide)  
+PROMPT_VENV="${PROMPT_SHOW_VENV:=1}"                        # Show Python virtualenv name? (1 = show, 0 = hide)  
+PROMPT_PATH="${PROMPT_SHOW_PATH:=1}"                        # Show current path? (1 = show, 0 = hide)  
+PROMPT_GIT="${PROMPT_SHOW_GIT:=1}"                          # Show git info? (1 = show, 0 = hide)  
+# --- Git Segment -----
+SHOW_REMOTE="${PROMPT_GIT_SHOW_REMOTE:=1}"                  # Show remote name (1=show, 0=hide)
+PRE_REMOTE="${PROMPT_GIT_PRE_REMOTE:=1}"                    # Remote before (1) or after (0) branch/status
+# --- Time Format ------
+PROMPT_TIME_FMT="${PROMPT_TIME_FORMAT:="%*"}"
+
+PROMPT_HL_BG="${PROMPT_HIGHLIGHT_COLOR:=cyan}"
+PROMPT_HL_FG="${PROMPT_HIGHLIGHT_TEXT:=white}"
+PROMPT_normal_BG="${PROMPT_GENERAL_BODY:=15}"
+PROMPT_normal_FG="${PROMPT_GENERAL_TEXT:=241}"
+PROMPT_ROOT_BG="${PROMPT_GENERAL_ROOT_BODY:=red}"
+PROMPT_ROOT_FG="${PROMPT_GENERAL_ROOT_TEXT:=15}"
+PROMPT_ROOT_PreHL_BG="${PROMPT_ROOT_PreHL_BODY:=cyan}"
+PROMPT_ROOT_PreHL_FG="${PROMPT_ROOT_PreHL_TEXT:=15}"
+PROMPT_EL_FG="${PROMPT_ELEMENT_COLOR:=black}"
+PROMPT_OS_ROOT_BG="${PROMPT_OS_ROOT_BODY:=cyan}"
+PROMPT_OS_ROOT_FG="${PROMPT_OS_ROOT_COLOR:=red}"
+PROMPT_OS_FG="${PROMPT_OS_COLOR:=blue}"
+PROMPT_PROMPT_FG="${PROMPT_PROMPT_COLOR:=yellow}"
+
+_VS_GIT_BG="$PROMPT_HL_BG"
+
+# ----------------------- Icons --------------------------------------
+# Override OS icon for fun
+CUSTOM_OS="${CUSTOM_OS_ICON:="🐧"}"      # e.g., "" or "🐧"
+# Override branch icon
+CUSTOM_BRANCH="${CUSTOM_BRANCH_ICON:=""}"
+# ----------------- Remote service icons ----------------------
+ICON_GITHUB="\uF09B"
+ICON_GITLAB="\uF296"
 
 # --------------------- Colour Overrides ---------------------------
 autoload -Uz colors && colors
@@ -176,19 +96,7 @@ GH_REMOTE_CLR="${GH_REMOTE_COLOR:=blue}"
 GL_REMOTE_CLR="${GL_REMOTE_COLOR:=magenta}"
 GIT_REMOTE_ACTIVE_CLR="${GIT_REMOTE_ACTIVE_COLOR:=yellow}"
 GIT_REMOTE_PASSIVE_CLR="${GIT_REMOTE_PASSIVE_COLOR:=$fg[grey]}"
+
 GIT_COLOR_GH="$fg[orange]"
 GIT_COLOR_GL="$fg[gold]"
-# ----------------------- Icons -----------------------------
-# Override OS icon for fun
-CUSTOM_OS_ICON=""      # e.g., "" or "🐧"
-# Override branch icon
-CUSTOM_BRANCH_ICON=""
 
-# --- Prompt Layout ----------------------------------------------------
-
-# Change path style: full, short, smart
-PROMPT_PATH_MODE="smart"
-
-# =====================================================================
-#                     END OF PROMPTRC
-# =====================================================================
