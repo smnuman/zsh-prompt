@@ -83,44 +83,41 @@ function __git_remote_segment() {
 git_remote_segment() {
   local segment="" remotes=() r url icon
   local active_remote active_clr="$GIT_REMOTE_ACTIVE_CLR" passive_clr="$GIT_REMOTE_PASSIVE_CLR"
-
   git rev-parse --is-inside-work-tree &>/dev/null || return
 
   active_remote="$(git config --get branch.$(git branch --show-current).remote 2>/dev/null)"
 
-  # collect relevant remotes (excluding origin)
-  while read -r ref; do
-    r="${ref%%/*}"
-    # [[ "$r" == "origin" ]] && continue
-    remotes+=("$r")
-  done < <(git branch -r --contains HEAD 2>/dev/null | sed 's/^[ *]*//')
+  # If active remote is set, show only that; otherwise show all remotes containing HEAD
+  if [[ -n "$active_remote" ]]; then
+    remotes=("$active_remote")
+  else
+    while read -r ref; do
+      r="${ref%%/*}"
+      remotes+=("$r")
+    done < <(git branch -r --contains HEAD 2>/dev/null | sed 's/^[ *]*//')
+    typeset -U remotes
+  fi
 
-  typeset -U remotes
   (( ${#remotes[@]} == 0 )) && return
-
   for r in "${remotes[@]}"; do
     url="$(git remote get-url "$r" 2>/dev/null)" || continue
-
     case "$url" in
     *github.com*)   github="$r"
                     icon="$(__git_icon_or_fallback "$ICON_GITHUB" "GH")"
                     git_icon="%F{$GH_ICON_CLR}${icon}%f"
-                    git_remote="%F{$GH_REMOTE_CLR}$github%f"
                     ;;
     *gitlab.com*)   gitlab="$r"
                     icon="$(__git_icon_or_fallback "$ICON_GITLAB" "GL")"
                     git_icon="%F{$GL_ICON_CLR}${icon}%f"
-                    git_remote="%F{$GL_REMOTE_CLR}$gitlab%f"
                     ;;
+    *)              git_icon="" ;;
     esac
-
     if [[ "$r" == "$active_remote" ]]; then
       segment+=" ${git_icon} %F{$active_clr}${r}%f"
     else
       segment+=" ${git_icon} %F{$passive_clr}${r}%f"
     fi
   done
-
   echo "$(set-remote ${_VS_GIT_} "${segment# }")"
 }
 
