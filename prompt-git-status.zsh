@@ -50,7 +50,7 @@ function git_prompt_segment() {
     (( $SHOW_REMOTE )) && REMOTES=$(git_remote_segment) && echo "$(set-remote ${LOCALS} ${REMOTES})" || echo "${LOCALS}"
 
   else
-    (( SHOW_REMOTE )) && echo "GIT:NaR" || echo ""
+    (( $SHOW_REMOTE )) && echo "GIT:NaR" || echo ""
   fi
 }
 
@@ -102,10 +102,12 @@ git_remote_segment() {
   for r in "${remotes[@]}"; do
     url="$(git remote get-url "$r" 2>/dev/null)" || continue
     case "$url" in
-    *github.com*)   icon="$(__git_icon_or_fallback "$ICON_GITHUB" "GH")"
+    *github.com*)   github="$r"
+                    icon="$(__git_icon_or_fallback "$ICON_GITHUB" "GH")"
                     git_icon="%F{$GH_ICON_CLR}${icon}%f"
                     ;;
-    *gitlab.com*)   icon="$(__git_icon_or_fallback "$ICON_GITLAB" "GL")"
+    *gitlab.com*)   gitlab="$r"
+                    icon="$(__git_icon_or_fallback "$ICON_GITLAB" "GL")"
                     git_icon="%F{$GL_ICON_CLR}${icon}%f"
                     ;;
     *)              git_icon="" ;;

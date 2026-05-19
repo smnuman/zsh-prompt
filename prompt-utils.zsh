@@ -143,7 +143,7 @@ function set_elements {
     ROOT_PATH_ELEMENT=$(__prompt_path)                                                                                                                                  # path element for root vs normal user
     _VS_LAST_=$(thin_element                  $'\uE0B1'      "${PROMPT_normal_BG}"   "${PROMPT_EL_FG}"                                  )                               # › (thin angle bracket separator 2: without any space pre- or -post)
 
-    PROMPT_TIME="${PROMPT_TIME_FORMAT:=%*}"
+    PROMPT_TIME="${PROMPT_TIME_FMT:=%*}"
     PROMPT_USER="%n${${USER_WITH_MACHINE:#0}:+@%m}"
 
     V_ENVIRON="${${VIRTUAL_ENV:t}:-}"
@@ -157,30 +157,10 @@ function set_prompt_colours {
     COLOR_RESET="%f %k"
     PROMPT_COLOR_RESET="%f"
 
-    _VS_GIT_BG="${PROMPT_HIGHLIGHT_COLOR:-cyan}"
+    _VS_GIT_BG=$PROMPT_HL_BG
     [[ $PROMPT_HIGHLIGHT == git ]] || _VS_GIT_BG="15"
 
-    PROMPT_HL_BG="${PROMPT_HIGHLIGHT_BODY:-"cyan"}"
-    PROMPT_HL_FG="${PROMPT_HIGHLIGHT_TEXT:-"blue"}"
-
-    PROMPT_normal_BG="${PROMPT_GENERAL_BODY:-"15"}"
-    PROMPT_normal_FG="${PROMPT_GENERAL_TEXT:-"241"}" # or black
-
-    PROMPT_ROOT_BG="${PROMPT_GENERAL_ROOT_BODY:-"red"}"
-    PROMPT_ROOT_FG="${PROMPT_GENERAL_ROOT_TEXT:-"15"}"
-
-    PROMPT_ROOT_PreHL_BG="${PROMPT_ROOT_PreHL_BODY:-"cyan"}"
-    PROMPT_ROOT_PreHL_FG="${PROMPT_ROOT_PreHL_TEXT:-"15"}"
-
     PROMPT_ROOT_NORMAL="%K{${PROMPT_normal_BG}}%F{${PROMPT_normal_FG}}"
-
-    PROMPT_EL_FG="${PROMPT_ELEMENT_COLOR:-"black"}"
-
-    PROMPT_OS_ROOT_BG="${PROMPT_OS_ROOT_BODY:-"cyan"}"
-    PROMPT_OS_ROOT_FG="${PROMPT_OS_ROOT_COLOR:-"red"}"
-    PROMPT_OS_FG="${PROMPT_OS_COLOR:-"blue"}"
-
-    PROMPT_PROMPT_FG="${PROMPT_PROMPT_COLOR:-"yellow"}"
 
     PROMPT_FG_MAIN=cyan
     PROMPT_BG_MAIN=black
@@ -190,13 +170,13 @@ function set_prompt_colours {
     PROMPT_BG_TIME=15
 
     if [[ $(id -u) -eq 0 ]]; then
-        ROOT_COLOR="%K{${PROMPT_ROOT_PreHL_BG:-cyan}} %F{${PROMPT_ROOT_PreHL_FG:-15}}"
-        ROOT_PATH_COLOR="%K{${PROMPT_ROOT_BG:-red}} %F{${PROMPT_ROOT_FG:-15}}"
-        ROOT_PROMPT_COLOR=" %F{${PROMPT_OS_ROOT_FG:-red}}"
+        ROOT_COLOR="%K{${PROMPT_ROOT_PreHL_BG}} %F{${PROMPT_ROOT_PreHL_FG}}"
+        ROOT_PATH_COLOR="%K{${PROMPT_ROOT_BG}} %F{${PROMPT_ROOT_FG}}"
+        ROOT_PROMPT_COLOR=" %F{${PROMPT_OS_ROOT_FG}}"
     else
-        ROOT_COLOR="%K{${PROMPT_normal_BG:-15}} %F{${PROMPT_normal_FG:-241}}"
-        ROOT_PATH_COLOR="%K{${PROMPT_HL_BG:-cyan}} %F{${PROMPT_HL_FG:-blue}}"
-        ROOT_PROMPT_COLOR=" %F{${PROMPT_PROMPT_FG:-yellow}}"
+        ROOT_COLOR="%K{${PROMPT_normal_BG}} %F{${PROMPT_normal_FG}}"
+        ROOT_PATH_COLOR="%K{${PROMPT_HL_BG}} %F{${PROMPT_HL_FG}}"
+        ROOT_PROMPT_COLOR=" %F{${PROMPT_PROMPT_FG}}"
     fi
 }
 
